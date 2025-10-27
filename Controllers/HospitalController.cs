@@ -29,13 +29,35 @@ namespace Security.Controllers
             var hospital = await _service.GetOne(id);
             return Ok(hospital);
         }
-        [HttpPost]
+        [HttpGet("type13")]
+        public async Task<IActionResult> GetAllHospitalsType13()
+        {
+            IEnumerable<Hospital> items = await _service.GetAllHospitalsType13();
+            return Ok(items);
+        }
+[HttpPost]
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> CreateHospital([FromBody] CreateHospitalDto dto)
         {
             if (!ModelState.IsValid) return ValidationProblem(ModelState);
             var hospital = await _service.CreateHospital(dto);
             return CreatedAtAction(nameof(GetOne), new { id = hospital.Id }, hospital);
+        }
+
+        [HttpPut("{id:guid}")]
+        [Authorize]
+        public async Task <IActionResult> UpdateHospital(Guid id, [FromBody] UpdateHospitalDto dto)
+        {
+            if(!ModelState.IsValid) return ValidationProblem(ModelState);
+            var updated= await_service.UpdateHospital(id,dto);
+            return Ok(updated);
+        }
+        [HttpDelete("{id:guid}")]
+        [Authorize(Policy = "AdminOnly")]
+        public async Task <IActionResult> Delete(Guid id)
+        {
+            var ok = await_service.DeleteHospital(id);
+            return ok ? NoContent() : NotFound();
         }
     }
 }
