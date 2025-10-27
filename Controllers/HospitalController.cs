@@ -30,6 +30,7 @@ namespace Security.Controllers
             return Ok(hospital);
         }
         [HttpGet("type13")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllHospitalsType13()
         {
             IEnumerable<Hospital> items = await _service.GetAllHospitalsType13();
@@ -49,14 +50,14 @@ namespace Security.Controllers
         public async Task <IActionResult> UpdateHospital(Guid id, [FromBody] UpdateHospitalDto dto)
         {
             if(!ModelState.IsValid) return ValidationProblem(ModelState);
-            var updated= await_service.UpdateHospital(id,dto);
+            var updated= await _service.UpdateHospital(id,dto);
             return Ok(updated);
         }
         [HttpDelete("{id:guid}")]
         [Authorize(Policy = "AdminOnly")]
         public async Task <IActionResult> Delete(Guid id)
         {
-            var ok = await_service.DeleteHospital(id);
+            var ok = await _service.DeleteHospital(id);
             return ok ? NoContent() : NotFound();
         }
     }
